@@ -29,10 +29,23 @@
 use strict;
 use warnings;
 
+use Getopt::Std;
 use Eswatcher::Config;
+
+my $config_file = "eswatcher.conf";
+my %opts = ();
 
 my $conf = new Eswatcher::Config;
 
-if ( $conf->load("eswatcher.conf") ) {
+getopts('ch', \%opts);
+if ( defined $opts{'c'} ) {
+	$config_file = $opts{'c'};	
+}
+if ( defined $opts{'h'} ) {
+        print "Usage: $0 [-ch]\n";
+        exit;
+}
+
+if ( $conf->load($config_file) ) {
 	$conf->parse;
 }
