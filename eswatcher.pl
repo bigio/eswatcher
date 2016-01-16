@@ -37,7 +37,7 @@ my %opts = ();
 
 my $conf = new Eswatcher::Config;
 
-getopts('ch', \%opts);
+getopts('c:h', \%opts);
 if ( defined $opts{'c'} ) {
 	$config_file = $opts{'c'};	
 }
@@ -48,4 +48,6 @@ if ( defined $opts{'h'} ) {
 
 if ( $conf->load($config_file) ) {
 	$conf->parse;
+} else {
+	die "Cannot find config file $config_file\n";
 }

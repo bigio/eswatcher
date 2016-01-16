@@ -46,6 +46,8 @@ sub load {
 	if ( -f $config_file ) {
 		$self->{'config_file'} = $config_file;
 		open $self->{'fh_cf'}, '<', $config_file or return 0;
+	} else {
+		return 0;
 	}
 	return 1;
 }
