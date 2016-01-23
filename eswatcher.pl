@@ -29,6 +29,7 @@
 use strict;
 use warnings;
 
+use Data::Dumper;
 use Getopt::Std;
 use Eswatcher::Config;
 
@@ -48,6 +49,7 @@ if ( defined $opts{'h'} ) {
 
 if ( $conf->load($config_file) ) {
 	$conf->parse;
+	# print Dumper $conf;
 } else {
 	die "Cannot find config file $config_file\n";
 }

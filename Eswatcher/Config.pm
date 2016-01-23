@@ -31,6 +31,8 @@ use warnings;
 
 package Eswatcher::Config;
 
+my %config;
+
 sub new {
         my ($class_name) = @_;
 
@@ -55,10 +57,40 @@ sub load {
 sub parse {
 	my ($self) = @_;
 	my $fh_cf = $self->{'fh_cf'};
+	my @name;
+	my @query;
+	my @action;
+
 	while (<$fh_cf>) {
 		chomp;
 		next if /^#/;
 		# print $_ . "\n";
+		if ( /(.*)name=/ ) {
+			@name = split(/=/, $_);
+			$self->{'config'}{NAME} = $name[1];
+		}
+		if ( /(.*)query=/ ) {
+			@query = split(/=/, $_);
+			$self->{'config'}{QUERY} = $query[1];
+		}
+		if ( /(.*)action=/ ) {
+			@action = split(/=/, $_);
+			@action = split(/ /, $action[1]);
+			$self->{'config'}{ACTION} = $action[0];
+			if ( $action[0] eq "email" ) {
+				$self->{'config'}{PARAMS}{FROM} = $action[1];
+				$self->{'config'}{PARAMS}{TO} = $action[2];
+				$self->{'config'}{PARAMS}{SUBJ} = $action[3];
+				$self->{'config'}{PARAMS}{TEXT} = $action[4];
+			}
+			if ( $action[0] eq "program" ) {
+				$self->{'config'}{PARAMS}{PROGNAME} = $action[1];
+				# Remove from array first 2 elements
+				shift(@action);
+				shift(@action);
+				$self->{'config'}{PARAMS}{PARAMETERS} = join(" ", @action);
+			}
+		}
 	}
 	close($self->{'fh_cf'});
 	$self->{'fh_cf'} = undef;
