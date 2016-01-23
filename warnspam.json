@@ -1,0 +1,42 @@
+{
+                 "query" : {
+                         "filtered" : {
+                                "query" : {
+                                    "query_string" : {
+                                        "analyze_wildcard" : "true",
+                                        "query" : "*sasl_method*"
+                                    }
+                                },
+                                "filter" : {
+                                    "bool" : {
+                                        "must" : [ {
+                                            "query" : {
+                                                "query_string" : {
+                                                    "analyze_wildcard" : "true",
+                                                    "query" : "*"
+                                                }
+                                            }
+                                        },
+                                        {
+                                        "range" : {
+                                            "@timestamp" : {
+                                                "gt" : "now-%sm"
+                                            }
+                                        }
+                                        }
+                                        ],
+                                        "must_not" : [ {
+                                            "query" : {
+                                                "match" : {
+                                                    "geoip.continent_code" : {
+                                                        "query" : "EU",
+                                                        "type" : "phrase"
+                                                    }
+                                                }
+                                            }
+                                        } ]
+                                    }
+                                }
+                         }
+                 }
+         }
