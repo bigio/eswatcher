@@ -31,12 +31,22 @@ use warnings;
 
 use Data::Dumper;
 use Getopt::Std;
+use POSIX qw/strftime/;
+
 use Eswatcher::Config;
+use Eswatcher::Logstash;
 
 my $config_file = "eswatcher.conf";
 my %opts = ();
+my $date = strftime "%Y.%m.%d", localtime;
+my $type = "postfix";
+my $results;
+
+#XXX
+my $minutes = 5;
 
 my $conf = new Eswatcher::Config;
+my $logst = new Eswatcher::Logstash;
 
 getopts('c:h', \%opts);
 if ( defined $opts{'c'} ) {
@@ -50,6 +60,10 @@ if ( defined $opts{'h'} ) {
 if ( $conf->load($config_file) ) {
 	$conf->parse;
 	# print Dumper $conf;
+	$logst->load($conf->{'config'}{'QUERY'});
+	$logst->parse($minutes);
+	my $results = $logst->search($date, $type);
+	print Dumper $results;
 } else {
 	die "Cannot find config file $config_file\n";
 }
