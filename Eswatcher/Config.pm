@@ -31,8 +31,6 @@ use warnings;
 
 package Eswatcher::Config;
 
-my %config;
-
 sub new {
         my ($class_name) = @_;
 
