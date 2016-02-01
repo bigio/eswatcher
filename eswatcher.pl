@@ -72,6 +72,7 @@ if ( $conf->load($config_file) ) {
 		$email->addFrom( $conf->{'config'}{'PARAMS'}{'FROM'} );
 		$email->addTo( $conf->{'config'}{'PARAMS'}{'TO'} );
 		$email->addSubj( $conf->{'config'}{'PARAMS'}{'SUBJ'} );
+		$email->addBody( $results );
 		$email->send;
 	} elsif ( $conf->{'config'}{'ACTION'} eq "program" ) {
 	} else {

@@ -59,10 +59,15 @@ sub addSubj {
 	$self->{'msg'}->add( "Subject", $subj);
 }
 
+sub addBody {
+	my ($self, $results) = @_;
+	$self->{'mailbody'} = "Test";
+}
+
 sub send {
 	my ($self) = @_;
 	my $fh = $self->{'msg'}->open;
-	print $fh "Mail message";
+	print $fh $self->{'mailbody'};
 	$fh->close
 		or die "couldn't send mail message: $!\n";
 }
