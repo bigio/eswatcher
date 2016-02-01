@@ -71,6 +71,22 @@ sub parse {
 			@query = split(/=/, $_);
 			$self->{'config'}{QUERY} = $query[1];
 		}
+		if ( /(.*)index=/ ) {
+			@query = split(/=/, $_);
+			$self->{'config'}{INDEX} = $query[1];
+		}
+		if ( /(.*)date=/ ) {
+			@query = split(/=/, $_);
+			$self->{'config'}{DATE} = $query[1];
+		}
+		if ( /(.*)minutes=/ ) {
+			@query = split(/=/, $_);
+			$self->{'config'}{MINUTES} = $query[1];
+		}
+		if ( /(.*)type=/ ) {
+			@query = split(/=/, $_);
+			$self->{'config'}{TYPE} = $query[1];
+		}
 		if ( /(.*)action=/ ) {
 			@action = split(/=/, $_);
 			@action = split(/ /, $action[1]);

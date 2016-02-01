@@ -44,13 +44,13 @@ sub parse {
 }
 
 sub search {
-    my ($self, $date, $type) = @_;
+    my ($self, $date, $conf) = @_;
 
     my $e = Search::Elasticsearch->new();
 
     my $results = $e->search(
-	index  => "logstash-$date",
-	type   => "$type",
+	index  => "$conf->{'config'}{'INDEX'}$date",
+	type   => "$conf->{'config'}{'TYPE'}",
 	scroll => '60s',
 	size   => 100,
 	body   => eval($self->{'parsed_json_text'})

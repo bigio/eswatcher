@@ -41,9 +41,7 @@ my %opts = ();
 my $date = strftime "%Y.%m.%d", localtime;
 my $type = "postfix";
 my $results;
-
-#XXX
-my $minutes = 5;
+my $minutes;
 
 my $conf = new Eswatcher::Config;
 my $logst = new Eswatcher::Logstash;
@@ -61,8 +59,11 @@ if ( $conf->load($config_file) ) {
 	$conf->parse;
 	# print Dumper $conf;
 	$logst->load($conf->{'config'}{'QUERY'});
-	$logst->parse($minutes);
-	my $results = $logst->search($date, $type);
+	$logst->parse($conf->{'config'}{'MINUTES'});
+	if ( defined $conf->{'config'}{'DATE'} ) {
+		$date = $conf->{'config'}{'DATE'};
+	}
+	my $results = $logst->search($date, $conf);
 	print Dumper $results;
 } else {
 	die "Cannot find config file $config_file\n";
