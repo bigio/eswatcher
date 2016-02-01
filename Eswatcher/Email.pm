@@ -42,9 +42,21 @@ sub new {
 	return $self;
 }
 
-sub addField {
-	my ($self, $field, $fieldValue) = @_;
-	$self->{'msg'}->add( $field, $fieldValue);
+sub addFrom {
+	my ($self, $from) = @_;
+	$self->{'msg'}->add( "From", $from);
+}
+
+sub addTo {
+	my ($self, $to) = @_;
+	$self->{'msg'}->add( "To", $to);
+}
+
+sub addSubj {
+	my ($self, $subj) = @_;
+	$subj =~ s/^\"//;
+	$subj =~ s/\"$//;
+	$self->{'msg'}->add( "Subject", $subj);
 }
 
 sub send {

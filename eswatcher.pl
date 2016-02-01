@@ -69,9 +69,9 @@ if ( $conf->load($config_file) ) {
 	# print Dumper $results;
 	if ( $conf->{'config'}{'ACTION'} eq "email" ) {
 		$email = new Eswatcher::Email;
-		$email->addField( "From", $conf->{'config'}{'PARAMS'}{'FROM'} );
-		$email->addField( "To", $conf->{'config'}{'PARAMS'}{'TO'} );
-		$email->addField( "Subject", $conf->{'config'}{'PARAMS'}{'SUBJECT'} );
+		$email->addFrom( $conf->{'config'}{'PARAMS'}{'FROM'} );
+		$email->addTo( $conf->{'config'}{'PARAMS'}{'TO'} );
+		$email->addSubj( $conf->{'config'}{'PARAMS'}{'SUBJ'} );
 		$email->send;
 	} elsif ( $conf->{'config'}{'ACTION'} eq "program" ) {
 	} else {
