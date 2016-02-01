@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 # Copyright (c) 2016, Giovanni Bechis
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 #
@@ -29,54 +29,30 @@
 use strict;
 use warnings;
 
-use Data::Dumper;
-use Getopt::Std;
-use POSIX qw/strftime/;
+use Mail::Send;
 
-use Eswatcher::Config;
-use Eswatcher::Logstash;
-use Eswatcher::Email;
+package Eswatcher::Email;
 
-my $config_file = "eswatcher.conf";
-my %opts = ();
-my $date = strftime "%Y.%m.%d", localtime;
-my $type = "postfix";
-my $results;
-my $minutes;
+sub new {
+	my ($class_name) = @_;
 
-my $conf = new Eswatcher::Config;
-my $logst = new Eswatcher::Logstash;
-my $email;
-
-getopts('c:h', \%opts);
-if ( defined $opts{'c'} ) {
-	$config_file = $opts{'c'};	
-}
-if ( defined $opts{'h'} ) {
-        print "Usage: $0 [-ch]\n";
-        exit;
+	my ($self) = {};
+	bless ($self, $class_name);
+	$self->{'msg'} = new Mail::Send;
+	return $self;
 }
 
-if ( $conf->load($config_file) ) {
-	$conf->parse;
-	# print Dumper $conf;
-	$logst->load($conf->{'config'}{'QUERY'});
-	$logst->parse($conf);
-	if ( defined $conf->{'config'}{'DATE'} ) {
-		$date = $conf->{'config'}{'DATE'};
-	}
-	my $results = $logst->search($date, $conf);
-	# print Dumper $results;
-	if ( $conf->{'config'}{'ACTION'} eq "email" ) {
-		$email = new Eswatcher::Email;
-		$email->addField( "From", $conf->{'config'}{'PARAMS'}{'FROM'} );
-		$email->addField( "To", $conf->{'config'}{'PARAMS'}{'TO'} );
-		$email->addField( "Subject", $conf->{'config'}{'PARAMS'}{'SUBJECT'} );
-		$email->send;
-	} elsif ( $conf->{'config'}{'ACTION'} eq "program" ) {
-	} else {
-		die("No action specified in configuration file\n");
-	}
-} else {
-	die "Cannot find config file $config_file\n";
+sub addField {
+	my ($self, $field, $fieldValue) = @_;
+	$self->{'msg'}->add( $field, $fieldValue);
 }
+
+sub send {
+	my ($self) = @_;
+	my $fh = $self->{'msg'}->open;
+	print $fh "Mail message";
+	$fh->close
+		or die "couldn't send mail message: $!\n";
+}
+
+1;
