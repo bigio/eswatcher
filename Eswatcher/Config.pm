@@ -98,8 +98,11 @@ sub parse {
 			if ( $action[0] eq "email" ) {
 				$self->{'config'}{PARAMS}{FROM} = $action[1];
 				$self->{'config'}{PARAMS}{TO} = $action[2];
-				$self->{'config'}{PARAMS}{SUBJ} = $action[3];
-				$self->{'config'}{PARAMS}{TEXT} = $action[4];
+				# Remove from array first 2 elements
+				shift(@action);
+				shift(@action);
+				shift(@action);
+				$self->{'config'}{PARAMS}{SUBJ} = join(" ", @action);
 			}
 			if ( $action[0] eq "program" ) {
 				$self->{'config'}{PARAMS}{PROGNAME} = $action[1];
