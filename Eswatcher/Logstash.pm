@@ -32,12 +32,14 @@ sub load {
     $self->{'json_text'} = $json_text;
 }
 
-# XXX use an array instead of a variable to handle more variables ?
 sub parse {
-    my ($self, $var) = @_;
-
+    my ($self, $conf) = @_;
     my $parsed;
-    $parsed = sprintf($self->{'json_text'}, $var);
+
+    # Replace every variables in the json template file
+    for my $i ( 0 .. ( $conf->{'config'}{'VARCOUNT'} - 1 ) ) {
+	$parsed = sprintf($self->{'json_text'}, $conf->{'config'}{"VAR$i"});
+    }
     $parsed =~ s/\:/\=\>/g;
     $parsed =~ s/\@/\\@/g;
     $self->{'parsed_json_text'} = $parsed;

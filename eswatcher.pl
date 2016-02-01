@@ -59,7 +59,7 @@ if ( $conf->load($config_file) ) {
 	$conf->parse;
 	# print Dumper $conf;
 	$logst->load($conf->{'config'}{'QUERY'});
-	$logst->parse($conf->{'config'}{'MINUTES'});
+	$logst->parse($conf);
 	if ( defined $conf->{'config'}{'DATE'} ) {
 		$date = $conf->{'config'}{'DATE'};
 	}

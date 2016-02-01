@@ -79,9 +79,13 @@ sub parse {
 			@query = split(/=/, $_);
 			$self->{'config'}{DATE} = $query[1];
 		}
-		if ( /(.*)minutes=/ ) {
+		if ( /(.*)vars=/ ) {
 			@query = split(/=/, $_);
-			$self->{'config'}{MINUTES} = $query[1];
+			@query = split(/,/, $query[1]);
+			for my $i ( 0 .. ( @query - 1 ) ) {
+				$self->{'config'}{"VAR$i"} = $query[0];
+				$self->{'config'}{'VARCOUNT'}++;
+			}
 		}
 		if ( /(.*)type=/ ) {
 			@query = split(/=/, $_);
