@@ -68,12 +68,14 @@ if ( $conf->load($config_file) ) {
 	my $results = $logst->search($date, $conf);
 	# print Dumper $results;
 	if ( $conf->{'config'}{'ACTION'} eq "email" ) {
-		$email = new Eswatcher::Email;
-		$email->addFrom( $conf->{'config'}{'PARAMS'}{'FROM'} );
-		$email->addTo( $conf->{'config'}{'PARAMS'}{'TO'} );
-		$email->addSubj( $conf->{'config'}{'PARAMS'}{'SUBJ'} );
-		$email->addBody( $results );
-		$email->send;
+		if ( $results->{hits}->{total} gt 0 ) {
+			$email = new Eswatcher::Email;
+			$email->addFrom( $conf->{'config'}{'PARAMS'}{'FROM'} );
+			$email->addTo( $conf->{'config'}{'PARAMS'}{'TO'} );
+			$email->addSubj( $conf->{'config'}{'PARAMS'}{'SUBJ'} );
+			$email->addBody( $conf->{'config'}{'PARAMS'}{'EMAIL_FIELDS'}, $results->{hits}->{hits} );
+			$email->send;
+		}
 	} elsif ( $conf->{'config'}{'ACTION'} eq "program" ) {
 	} else {
 		die("No action specified in configuration file\n");

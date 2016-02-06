@@ -60,8 +60,28 @@ sub addSubj {
 }
 
 sub addBody {
-	my ($self, $results) = @_;
-	$self->{'mailbody'} = "Test";
+	use Data::Dumper;
+	my ( $self, $cmfields, @results ) = @_;
+	my $mailbody;
+	my @mmfields;
+
+	my @mfields = split(/ /, $cmfields);
+	for my $i ( 0 .. ( @{$results[0]} - 1 ) ) {
+		for my $j ( 0 .. ( @mfields - 1 ) ) {
+			if ( ( defined $results[0][$i]->{_source}->{$mfields[$j]} ) or ( $mfields[$j] =~ /[a-z]\.[a-z]/ ) ) {
+				# XXX support subfields, only one level atm
+				if ( $mfields[$j] =~ /[a-z]\.[a-z]/ ) {
+					@mmfields = split(/\./, $mfields[$j]);
+					$mailbody .= $mfields[$j] . " -> " . $results[0][$i]->{_source}->{$mmfields[0]}->{$mmfields[1]};
+				} else {
+					$mailbody .= $mfields[$j] . " -> " . $results[0][$i]->{_source}->{$mfields[$j]};
+				}
+				$mailbody .= "\n";
+			}
+		}
+		$mailbody .= "\n";
+		$self->{'mailbody'} = $mailbody;
+	}
 }
 
 sub send {

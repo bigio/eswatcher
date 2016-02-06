@@ -58,6 +58,7 @@ sub parse {
 	my @name;
 	my @query;
 	my @action;
+	my @email_fields;
 
 	while (<$fh_cf>) {
 		chomp;
@@ -111,6 +112,10 @@ sub parse {
 				shift(@action);
 				$self->{'config'}{PARAMS}{PARAMETERS} = join(" ", @action);
 			}
+		}
+		if ( /(.*)email_fields=/ ) {
+			@email_fields = split(/=/, $_);
+			$self->{'config'}{PARAMS}{EMAIL_FIELDS} = join(" ", $email_fields[1]);
 		}
 	}
 	close($self->{'fh_cf'});
