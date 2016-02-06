@@ -4,7 +4,7 @@
                                 "query" : {
                                     "query_string" : {
                                         "analyze_wildcard" : "true",
-                                        "query" : "*sasl_method*"
+                                        "query" : "*sasl_method* OR \"Accepted authentication for user\""
                                     }
                                 },
                                 "filter" : {
