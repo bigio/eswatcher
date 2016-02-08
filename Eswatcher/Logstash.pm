@@ -62,7 +62,7 @@ sub parse {
     my ($self, $conf) = @_;
     my $parsed;
 
-    # Replace every variables in the json template file
+    # Replace every variable in the json template file
     for my $i ( 0 .. ( $conf->{'config'}{'VARCOUNT'} - 1 ) ) {
 	$parsed = sprintf($self->{'json_text'}, $conf->{'config'}{"VAR$i"});
     }
