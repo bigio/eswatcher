@@ -39,7 +39,12 @@
                                 }
                          }
                  },
-				"aggregations" : {
-					"keywords" : {"significant_terms" : {"field" : "sasl_username.raw"}}
+				"aggs" : {
+					"keywords" : {
+						"terms" : {
+							"field" : "sasl_username.raw",
+							"size" : 0
+						}
+					}
 				}
          }

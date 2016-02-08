@@ -73,7 +73,10 @@ if ( $conf->load($config_file) ) {
 			$email->addFrom( $conf->{'config'}{'PARAMS'}{'FROM'} );
 			$email->addTo( $conf->{'config'}{'PARAMS'}{'TO'} );
 			$email->addSubj( $conf->{'config'}{'PARAMS'}{'SUBJ'} );
-			$email->addBody( $conf->{'config'}{'PARAMS'}{'EMAIL_FIELDS'}, $results->{hits}->{hits} );
+			# Add Aggregations to body
+			$email->addAggsBody( $results->{aggregations}->{keywords}->{buckets} );
+			# Add Fields to body
+			$email->addFieldsBody( $conf->{'config'}{'PARAMS'}{'EMAIL_FIELDS'}, $results->{hits}->{hits} );
 			$email->send;
 		}
 	} elsif ( $conf->{'config'}{'ACTION'} eq "program" ) {

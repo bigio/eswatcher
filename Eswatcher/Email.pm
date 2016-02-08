@@ -59,8 +59,7 @@ sub addSubj {
 	$self->{'msg'}->add( "Subject", $subj);
 }
 
-sub addBody {
-	use Data::Dumper;
+sub addFieldsBody {
 	my ( $self, $cmfields, @results ) = @_;
 	my $mailbody;
 	my @mmfields;
@@ -83,8 +82,20 @@ sub addBody {
 			}
 		}
 		$mailbody .= "\n";
-		$self->{'mailbody'} = $mailbody;
 	}
+	$self->{'mailbody'} .= $mailbody;
+}
+
+sub addAggsBody {
+	my ( $self, @results ) = @_;
+	my $mailbody;
+
+	for my $i ( 0 .. ( @{$results[0]} - 1 ) ) {
+		$mailbody .= $results[0][$i]->{key} . " -> " . $results[0][$i]->{doc_count};
+		$mailbody .= "\n";
+	}
+	$mailbody .= "\n";
+	$self->{'mailbody'} .= $mailbody;
 }
 
 sub send {
