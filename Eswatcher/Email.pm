@@ -72,7 +72,9 @@ sub addBody {
 				# XXX support subfields, only one level atm
 				if ( $mfields[$j] =~ /[a-z]\.[a-z]/ ) {
 					@mmfields = split(/\./, $mfields[$j]);
-					$mailbody .= $mfields[$j] . " -> " . $results[0][$i]->{_source}->{$mmfields[0]}->{$mmfields[1]};
+					if ( defined $mmfields[0] ) {
+						$mailbody .= $mfields[$j] . " -> " . $results[0][$i]->{_source}->{$mmfields[0]}->{$mmfields[1]};
+					}
 				} else {
 					$mailbody .= $mfields[$j] . " -> " . $results[0][$i]->{_source}->{$mfields[$j]};
 				}
