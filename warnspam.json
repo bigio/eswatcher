@@ -38,5 +38,8 @@
                                     }
                                 }
                          }
-                 }
+                 },
+				"aggregations" : {
+					"keywords" : {"significant_terms" : {"field" : "sasl_username.raw"}}
+				}
          }
