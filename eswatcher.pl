@@ -68,7 +68,7 @@ if ( $conf->load($config_file) ) {
 	my $results = $logst->search($date, $conf);
 	# print Dumper $results;
 	if ( $conf->{'config'}{'ACTION'} eq "email" ) {
-		if ( $results->{hits}->{total} gt 0 ) {
+		if ( $results->{hits}->{total} > $conf->{'config'}{MIN_DOC} ) {
 			$email = new Eswatcher::Email;
 			$email->addFrom( $conf->{'config'}{'PARAMS'}{'FROM'} );
 			$email->addTo( $conf->{'config'}{'PARAMS'}{'TO'} );

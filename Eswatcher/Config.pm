@@ -117,6 +117,10 @@ sub parse {
 			@email_fields = split(/=/, $_);
 			$self->{'config'}{PARAMS}{EMAIL_FIELDS} = join(" ", $email_fields[1]);
 		}
+		if ( /(.*)min_doc=/ ) {
+			@query = split(/=/, $_);
+			$self->{'config'}{MIN_DOC} = $query[1] + 0;
+		}
 	}
 	close($self->{'fh_cf'});
 	$self->{'fh_cf'} = undef;
