@@ -67,8 +67,8 @@ if ( $conf->load($config_file) ) {
 	}
 	my $results = $logst->search($date, $conf);
 	# print Dumper $results;
-	if ( $conf->{'config'}{'ACTION'} eq "email" ) {
-		if ( $results->{hits}->{total} > $conf->{'config'}{MIN_DOC} ) {
+	if ( $results->{hits}->{total} > $conf->{'config'}{MIN_DOC} ) {
+		if ( $conf->{'config'}{'ACTION'} eq "email" ) {
 			$email = new Eswatcher::Email;
 			$email->addFrom( $conf->{'config'}{'PARAMS'}{'FROM'} );
 			$email->addTo( $conf->{'config'}{'PARAMS'}{'TO'} );
@@ -78,10 +78,10 @@ if ( $conf->load($config_file) ) {
 			# Add Fields to body
 			$email->addFieldsBody( $conf->{'config'}{'PARAMS'}{'EMAIL_FIELDS'}, $results->{hits}->{hits} );
 			$email->send;
+		} elsif ( $conf->{'config'}{'ACTION'} eq "program" ) {
+		} else {
+			die("No action specified in configuration file\n");
 		}
-	} elsif ( $conf->{'config'}{'ACTION'} eq "program" ) {
-	} else {
-		die("No action specified in configuration file\n");
 	}
 } else {
 	die "Cannot find config file $config_file\n";
