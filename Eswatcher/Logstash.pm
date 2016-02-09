@@ -81,6 +81,7 @@ sub search {
 	type   => "$conf->{'config'}{'TYPE'}",
 	scroll => '60s',
 	size   => 100,
+	ignore => 404,
 	body   => eval($self->{'parsed_json_text'})
 	);
     return $results
