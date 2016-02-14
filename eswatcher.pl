@@ -31,6 +31,7 @@ use warnings;
 
 use Data::Dumper;
 use Getopt::Std;
+use File::Temp qw/ tempfile tempdir /;
 use POSIX qw/strftime/;
 
 use Eswatcher::Config;
@@ -43,6 +44,9 @@ my $date = strftime "%Y.%m.%d", localtime;
 my $type = "postfix";
 my $results;
 my $minutes;
+my $tmpjsonfile;
+my $fh_tj;
+my $progparams;
 
 my $conf = new Eswatcher::Config;
 my $logst = new Eswatcher::Logstash;
@@ -79,6 +83,18 @@ if ( $conf->load($config_file) ) {
 			$email->addFieldsBody( $conf->{'config'}{'PARAMS'}{'EMAIL_FIELDS'}, $results->{hits}->{hits} );
 			$email->send;
 		} elsif ( $conf->{'config'}{'ACTION'} eq "program" ) {
+			# Create a temp file containing the json result,
+			# will be the first argument of the program forked
+			# the temp file will be deleted when the main program
+			# will exit
+			($fh_tj, $tmpjsonfile) = tempfile("eswatcher.XXXXXXXX",
+				TMPDIR => 1,
+				UNLINK => 1);
+
+                        print $fh_tj $logst->dump_json($results);
+                        close($fh_tj);
+			$progparams = $tmpjsonfile . " " . $conf->{'config'}{'PARAMS'}{'PARAMETERS'};
+			system( $conf->{'config'}{'PARAMS'}{'PROGNAME'} . " " . $progparams );
 		} else {
 			die("No action specified in configuration file\n");
 		}

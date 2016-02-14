@@ -29,6 +29,7 @@
 use strict;
 use warnings;
 
+use JSON::MaybeXS;
 use Search::Elasticsearch;
 
 package Eswatcher::Logstash;
@@ -85,6 +86,13 @@ sub search {
 	body   => eval($self->{'parsed_json_text'})
 	);
     return $results
+}
+
+sub dump_json {
+    my ($self, $res) = @_;
+
+    my $json_obj = JSON::MaybeXS->new(utf8 => 1);
+    return $json_obj->encode($res);
 }
 
 1;
