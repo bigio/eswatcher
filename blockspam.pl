@@ -5,6 +5,7 @@ use warnings;
 
 use Data::Dumper;
 use JSON::MaybeXS;
+use Net::OpenSSH;
 
 my $mailbody;
 
@@ -14,6 +15,8 @@ my $json_obj;
 # Array with json data
 my @results;
 my $spammer;
+my $host = "";
+my $ssh;
 
 open(FH, "< $jsonfile") or die "can't open json file: $!\n";
 my $res = <FH>;
@@ -22,9 +25,32 @@ close(FH);
 $json_obj = JSON::MaybeXS->new(utf8 => 1);
 @results = $json_obj->decode($res);
 
- print Dumper @results;
+
+# print Dumper @results;
 
 # The first entity in json aggregation is the email sending more spam
 $spammer = $results[0]->{aggregations}->{keywords}->{buckets}[0]->{key};
 
-print $spammer;
+for my $i ( 0 .. ( @{$results[0]->{hits}->{hits}} - 1 ) ) {
+	if ( $results[0]->{hits}->{hits}[$i]->{_source}->{sasl_username} eq $spammer ) {
+		if ( $host ne $results[0]->{hits}->{hits}[$i]->{_source}->{host} ) {
+			print $results[0]->{hits}->{hits}[$i]->{_source}->{sasl_username};
+			print " -> ";
+			print $results[0]->{hits}->{hits}[$i]->{_source}->{host};
+			# XXX OpenSMTPD non logga gli indirizzi ip (ancora)
+			if ( defined $results[0]->{hits}->{hits}[$i]->{_source}->{ip} ) {
+				print " -> ";
+				print $results[0]->{hits}->{hits}[$i]->{_source}->{ip};
+			}
+			print "\n";
+			$ssh = Net::OpenSSH->new($results[0]->{hits}->{hits}[$i]->{_source}->{host}, 'batch_mode' => 1);
+			$ssh->error and
+				die "Couldn't establish SSH connection: ". $ssh->error;
+			my @ls = $ssh->capture("ls /tmp");
+			$ssh->error and
+				die "remote ls command failed: " . $ssh->error;
+			print $ls[0];
+		}
+		$host = $results[0]->{hits}->{hits}[$i]->{_source}->{host};
+	}
+}
