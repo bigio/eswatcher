@@ -8,19 +8,23 @@ use JSON::MaybeXS;
 
 my $mailbody;
 
+# the first argument is the json temporary file
 my $jsonfile = $ARGV[0];
-open(FH, "< $jsonfile") or die "I can't open counttext: $!\n";
+my $json_obj;
+# Array with json data
+my @results;
+my $spammer;
+
+open(FH, "< $jsonfile") or die "can't open json file: $!\n";
 my $res = <FH>;
 close(FH);
 
-my $json_obj = JSON::MaybeXS->new(utf8 => 1);
-my @results = $json_obj->decode($res);
+$json_obj = JSON::MaybeXS->new(utf8 => 1);
+@results = $json_obj->decode($res);
 
-# print Dumper @results;
+ print Dumper @results;
 
-for my $i ( 0 .. ( @{$results[0]->{aggregations}->{keywords}->{buckets}} - 1 ) ) {
-	$mailbody .= $results[0]->{aggregations}->{keywords}->{buckets}[$i]->{key} . " -> " . $results[0]->{aggregations}->{keywords}->{buckets}[$i]->{doc_count};
-	$mailbody .= "\n";
-}
+# The first entity in json aggregation is the email sending more spam
+$spammer = $results[0]->{aggregations}->{keywords}->{buckets}[0]->{key};
 
-print $mailbody;
+print $spammer;
