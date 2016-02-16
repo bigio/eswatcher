@@ -25,7 +25,6 @@ close(FH);
 $json_obj = JSON::MaybeXS->new(utf8 => 1);
 @results = $json_obj->decode($res);
 
-
 # print Dumper @results;
 
 # The first entity in json aggregation is the email sending more spam
@@ -41,15 +40,15 @@ for my $i ( 0 .. ( @{$results[0]->{hits}->{hits}} - 1 ) ) {
 			if ( defined $results[0]->{hits}->{hits}[$i]->{_source}->{ip} ) {
 				print " -> ";
 				print $results[0]->{hits}->{hits}[$i]->{_source}->{ip};
+				$ssh = Net::OpenSSH->new($results[0]->{hits}->{hits}[$i]->{_source}->{host}, 'batch_mode' => 1);
+				$ssh->error and
+					die "Couldn't establish SSH connection: ". $ssh->error;
+				my @prg = $ssh->capture("/usr/local/scripts/blockspam.pl $results[0]->{hits}->{hits}[$i]->{_source}->{ip} $results[0]->{hits}->{hits}[$i]->{_source}->{sasl_username}");
+				$ssh->error and
+					die "remote command command failed: " . $ssh->error;
+				print $prg[0];
 			}
 			print "\n";
-			$ssh = Net::OpenSSH->new($results[0]->{hits}->{hits}[$i]->{_source}->{host}, 'batch_mode' => 1);
-			$ssh->error and
-				die "Couldn't establish SSH connection: ". $ssh->error;
-			my @ls = $ssh->capture("ls /tmp");
-			$ssh->error and
-				die "remote ls command failed: " . $ssh->error;
-			print $ls[0];
 		}
 		$host = $results[0]->{hits}->{hits}[$i]->{_source}->{host};
 	}
