@@ -41,7 +41,7 @@ use Eswatcher::Email;
 my $config_file = "eswatcher.conf";
 my %opts = ();
 my $date = strftime "%Y.%m.%d", localtime;
-my $type = "postfix";
+my $type;
 my $results;
 my $minutes;
 my $tmpjsonfile;
@@ -68,6 +68,9 @@ if ( $conf->load($config_file) ) {
 	$logst->parse($conf);
 	if ( defined $conf->{'config'}{'DATE'} ) {
 		$date = $conf->{'config'}{'DATE'};
+	}
+	if ( defined $conf->{'config'}{'TYPE'} ) {
+		$type = $conf->{'config'}{'TYPE'};
 	}
 	my $results = $logst->search($date, $conf);
 	# print Dumper $results;
