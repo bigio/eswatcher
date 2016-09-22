@@ -1,0 +1,1 @@
+ESWatcher is a perl program that queries an Elasticsearch instance and reports via email (or via actions) if a query matches.
