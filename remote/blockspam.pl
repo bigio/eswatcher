@@ -47,10 +47,13 @@ if ($#ARGV != 1) {
 my $ip=shift;
 my $email=shift;
 
-die "Script should not run as root, use sudo instead\n" if ( $< == 0 );
+die "Script should not run as root, use sudo/doas instead\n" if ( $< == 0 );
 
 if ( $^O eq "openbsd" ) {
-	system("/usr/local/bin/sudo /sbin/pfctl -k $ip");
+	system("/usr/bin/doas /sbin/pfctl -k $ip");
+} else {
+	# kill spammer ip address with iptables
+	# system("/usr/bin/sudo iptables .....")
 }
 
 $conn = DBI->connect("DBI:mysql:database=$db;host=$host",$user,$pass,{RaiseError => 1});
