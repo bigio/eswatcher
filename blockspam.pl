@@ -62,7 +62,6 @@ for my $i ( 0 .. ( @{$results[0]->{hits}->{hits}} - 1 ) ) {
 			print $results[0]->{hits}->{hits}[$i]->{_source}->{sasl_username};
 			print " -> ";
 			print $results[0]->{hits}->{hits}[$i]->{_source}->{host};
-			# XXX OpenSMTPD non logga gli indirizzi ip (ancora)
 			if ( defined $results[0]->{hits}->{hits}[$i]->{_source}->{ip} ) {
 				print " -> ";
 				print $results[0]->{hits}->{hits}[$i]->{_source}->{ip};
