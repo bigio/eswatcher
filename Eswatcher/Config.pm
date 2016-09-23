@@ -99,7 +99,7 @@ sub parse {
 			if ( $action[0] eq "email" ) {
 				$self->{'config'}{PARAMS}{FROM} = $action[1];
 				$self->{'config'}{PARAMS}{TO} = $action[2];
-				# Remove from array first 2 elements
+				# Remove from array first 3 elements
 				shift(@action);
 				shift(@action);
 				shift(@action);
