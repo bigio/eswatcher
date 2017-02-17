@@ -1,21 +1,17 @@
 {
                  "query" : {
-                         "filtered" : {
-                                "query" : {
+                         "bool" : {
+                                "must" : {
                                     "query_string" : {
                                         "analyze_wildcard" : "true",
                                         "query" : "*sasl_method* OR \"Accepted authentication for user\""
                                     }
                                 },
-                                "filter" : {
-                                    "bool" : {
                                         "must" : [ {
-                                            "query" : {
                                                 "query_string" : {
                                                     "analyze_wildcard" : "true",
                                                     "query" : "*"
                                                 }
-                                            }
                                         },
                                         {
                                         "range" : {
@@ -25,25 +21,26 @@
                                         }
                                         }
                                         ],
+					"must": {
+						"exists": {
+							"field": "geoip.continent_code"
+						}
+					},
                                         "must_not" : [ {
-                                            "query" : {
                                                 "match" : {
                                                     "geoip.continent_code" : {
                                                         "query" : "EU",
                                                         "type" : "phrase"
                                                     }
                                                 }
-                                            }
                                         } ]
                                     }
-                                }
-                         }
                  },
 				"aggs" : {
 					"keywords" : {
 						"terms" : {
 							"field" : "sasl_username.raw",
-							"size" : 0
+							"size" : 1
 						}
 					}
 				}
