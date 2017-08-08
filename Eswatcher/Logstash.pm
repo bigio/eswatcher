@@ -67,8 +67,6 @@ sub parse {
     for my $i ( 0 .. ( $conf->{'config'}{'VARCOUNT'} - 1 ) ) {
 	$parsed = sprintf($self->{'json_text'}, $conf->{'config'}{"VAR$i"});
     }
-    $parsed =~ s/\:/\=\>/g;
-    $parsed =~ s/\@/\\@/g;
     $self->{'parsed_json_text'} = $parsed;
 }
 
@@ -83,7 +81,7 @@ sub search {
 	scroll => '60s',
 	size   => 100,
 	ignore => 404,
-	body   => eval($self->{'parsed_json_text'})
+	body   => "$self->{'parsed_json_text'}"
 	);
     return $results
 }
